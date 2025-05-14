@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Clube La Dulce Vita</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for("static", filename="img/la_dulce_vita_logo.jpeg") }}" alt="La Dulce Vita Logo" style="height: 50px; width: auto;">
+            <h1>Clube La Dulce Vita</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for("main.index") }}">Início</a></li>
+                <li><a href="{{ url_for("main.benefits") }}">Benefícios</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for("user.dashboard") }}">Minha Conta</a></li>
+                <li><a href="{{ url_for("auth.logout") }}">Sair</a></li>
+                {% else %}
+                <li><a href="{{ url_for("auth.login") }}">Login</a></li>
+                <li><a href="{{ url_for("auth.register") }}">Cadastre-se</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <h2>Acesse sua Conta</h2>
+        <p>Bem-vindo(a) de volta! Faça login para ver seus pontos e resgatar benefícios.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for("auth.login") }}">
+            <div class="form-group">
+                <label for="email">Email ou WhatsApp:</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group remember-me">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Lembrar-me</label>
+            </div>
+            <button type="submit" class="btn-primary">Entrar</button>
+        </form>
+        <p>Ainda não tem uma conta? <a href="{{ url_for("auth.register") }}">Cadastre-se</a></p>
+        <!-- Add forgot password link if needed -->
+        <!-- <p><a href="#">Esqueceu sua senha?</a></p> -->
+    </main>
+
+    <footer>
+        <p>&copy; 2025 La Dulce Vita Confeitaria Saudável. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="{{ url_for("static", filename="js/script.js") }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benefícios - Clube La Dulce Vita</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for("static", filename="img/la_dulce_vita_logo.jpeg") }}" alt="La Dulce Vita Logo" style="height: 50px; width: auto;">
+            <h1>Clube La Dulce Vita</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for("main.index") }}">Início</a></li>
+                <li><a href="{{ url_for("main.benefits") }}">Benefícios</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for("user.dashboard") }}">Minha Conta</a></li>
+                <li><a href="{{ url_for("auth.logout") }}">Sair</a></li>
+                {% else %}
+                <li><a href="{{ url_for("auth.login") }}">Login</a></li>
+                <li><a href="{{ url_for("auth.register") }}">Cadastre-se</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="benefits-page">
+        <h2>Regras e Benefícios do Clube</h2>
+        <p>Veja como funciona nosso sistema de pontos e os descontos que você pode ganhar!</p>
+
+        <section class="points-rules">
+            <h3>Como Acumular Pontos</h3>
+            <ul>
+                <li>Ganhe <strong>1 ponto</strong> a cada <strong>R$ 1,00</strong> gasto em qualquer produto La Dulce Vita ou Healthy Pizza.</li>
+                <li>Informe seu CPF ou número de WhatsApp cadastrado no momento da compra.</li>
+                <li>Os pontos são creditados automaticamente em sua conta.</li>
+                <li>Pontos não expiram!</li>
+            </ul>
+        </section>
+
+        <section class="discount-rules">
+            <h3>Como Resgatar Descontos</h3>
+            <p>Acesse sua conta e veja os descontos disponíveis para resgate com seus pontos acumulados. Abaixo estão as regras atuais:</p>
+            
+            {% if rules %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Benefício</th>
+                        <th>Pontos Necessários</th>
+                        <th>Descrição</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rule in rules %}
+                    <tr>
+                        <td>{{ rule.name }}</td>
+                        <td>{{ rule.points_required if rule.points_required is not none else ">0" }}</td>
+                        <td>{{ rule.description }} ({{ rule.discount_type }}: {{ rule.discount_value }}{{ ">" if rule.discount_type == "percentage" else "" }})</td>
+                        <td>{{ "Ativo" if rule.is_active else "Inativo" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Nenhuma regra de desconto cadastrada no momento.</p>
+            {% endif %}
+            
+            {% if current_user.is_authenticated %}
+            <p style="margin-top: 20px;"><a href="{{ url_for("user.dashboard") }}" class="btn-secondary">Ver meus pontos e resgatar</a></p>
+            {% else %}
+            <p style="margin-top: 20px;"><a href="{{ url_for("auth.login") }}" class="btn-primary">Faça login para resgatar</a></p>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 La Dulce Vita Confeitaria Saudável. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="{{ url_for("static", filename="js/script.js") }}"></script>
+</body>
+</html>
+
